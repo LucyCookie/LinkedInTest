@@ -14,7 +14,7 @@ public class Application extends Controller {
         return ok(index.render(""));
     }
 
-    public static Result calculate(){
+    public Result calculate(){
         Calculator calculation= Form.form(Calculator.class).bindFromRequest().get();
         return ok(index.render(String.valueOf(calculation.calculate())));
     }

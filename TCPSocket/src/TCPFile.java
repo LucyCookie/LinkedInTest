@@ -33,8 +33,8 @@ public class TCPFile {
 class Connection extends Thread {
     DataInputStream in;
     Socket clientSocket;
-    FileWriter fileWriter;
-    BufferedWriter bufferedWriter;
+    FileOutputStream fileWriter;
+    BufferedOutputStream bufferedWriter;
 
     public Connection(Socket aClientSocket) {
         try {
@@ -48,15 +48,17 @@ class Connection extends Thread {
 
     public void run() {
         try {
-            fileWriter = new FileWriter("./" + TCPFile.fileNo);
+            fileWriter = new FileOutputStream("./" + TCPFile.fileNo);
             synchronized (TCPFile.fileNo) {
                 TCPFile.fileNo++;
             }
-            bufferedWriter = new BufferedWriter(fileWriter);
-            byte b;
-            while (true) {
-                b = in.readByte();
-                bufferedWriter.write(b);
+            bufferedWriter = new BufferedOutputStream(fileWriter);
+            byte[] b=new byte[6000];
+            int l=0;
+            while (l!=-1) {
+                l = in.read(b);
+                if (l!=-1)bufferedWriter.write(b,0,l);
+//                bufferedWriter.write(b);
             }
         } catch (EOFException e) {
             System.out.println("EOF:" + e.getMessage());
